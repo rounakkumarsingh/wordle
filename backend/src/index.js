@@ -1,13 +1,13 @@
 import dotenv from "dotenv";
-import connectDB from "./db";
-import app from "./app";
+import connectDB from "./db/index.js";
+import app from "./app.js";
 
 dotenv.config({
     path: "../.env",
     cridentials: true,
 });
 
-async () => {
+(async () => {
     try {
         await connectDB();
         const server = app.listen(process.env.PORT ?? 5030, () => {
@@ -20,4 +20,4 @@ async () => {
         console.log("MONGO CONNECTION ERROR: ", error);
         process.exit(1);
     }
-};
+})();

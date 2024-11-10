@@ -11,6 +11,7 @@ import {
     updateProfilePicture,
 } from "../controllers/user.controller.js";
 import upload from "../middlewares/multer.middleware.js";
+import verifyJWT from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -27,5 +28,6 @@ router.route("/update-account").patch(verifyJWT, updateAccountDetails);
 router
     .route("/update-profile-picture")
     .patch(verifyJWT, upload.single("avatar"), updateProfilePicture);
+const userRouter = router;
 
-export default userRouter = router;
+export default userRouter;

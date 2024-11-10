@@ -1,6 +1,6 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 import { hash, compare } from "bcrypt";
-import { sign } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 const userSchema = new Schema(
     {
@@ -9,7 +9,7 @@ const userSchema = new Schema(
             required: true,
             unique: true,
             lowercase: true,
-            trim: true,
+            nexttrim: true,
             index: true,
         },
         email: {
@@ -53,7 +53,7 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 };
 
 userSchema.methods.generateAccessToken = function () {
-    return sign(
+    return jwt.sign(
         {
             _id: this._id,
             email: this.email,

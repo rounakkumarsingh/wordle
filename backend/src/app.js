@@ -20,7 +20,7 @@ app.use(cookieParser());
 
 app.use("/api/v1/users", userRouter);
 
-app.use((err, _, res, _) => {
+app.use((err, _, res, __) => {
     const error =
         err instanceof ApiError
             ? err

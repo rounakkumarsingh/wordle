@@ -1,12 +1,12 @@
-import asyncHandler from "../utils/asyncHandler";
+import asyncHandler from "../utils/asyncHandler.js";
 import {
     deleteFromCloudinary,
-    uplodOnCloudinary,
+    uploadOnCloudinary,
 } from "../utils/cloudinary.js";
 import User from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import { verify } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -46,7 +46,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const profilePictureLocalPath = req.file?.path || "./public/Untitled.png";
 
-    const profilePicture = await uplodOnCloudinary(profilePictureLocalPath);
+    const profilePicture = await uploadOnCloudinary(profilePictureLocalPath);
 
     const user = await User.create({
         username: username.toLowerCase(),
@@ -54,7 +54,6 @@ const registerUser = asyncHandler(async (req, res) => {
         fullName,
         profilePicture,
         password,
-        refreshToken,
     });
 
     const createdUser = await User.findById(user._id).select(
@@ -96,13 +95,15 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User doesn't exist.");
     }
 
-    if (!isPasswordValid) {
-        throw new ApiError(404, "User doesn't exist.");
-    }
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+        user._id
+    );
 
     const loggedInUser = await User.findById(user._id).select(
         "-password -refreshToken"
     );
+
+    user.refreshToken = refreshToken;
 
     const options = {
         httpOnly: true,
@@ -119,6 +120,7 @@ const loginUser = asyncHandler(async (req, res) => {
             })
         );
 });
+
 const logoutUser = asyncHandler(async (req, res) => {
     const userId = req.user._id;
     const updatedUser = await User.findByIdAndUpdate(
@@ -142,6 +144,7 @@ const logoutUser = asyncHandler(async (req, res) => {
         .clearCookie("refreshToken", options)
         .json(new ApiResponse(200, "User logged out successfully"));
 });
+
 const findUser = asyncHandler(async (req, res) => {
     const { username } = req.body;
 
@@ -170,7 +173,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 
     try {
-        const decodedToken = verify(
+        const decodedToken = jwt.verify(
             incomingRefreshToken,
             process.env.REFRESH_TOKEN_SECRET
         );
@@ -264,7 +267,7 @@ const updateProfilePicture = asyncHandler(async (req, res) => {
         avatarLocalPath = "./public/Untitled.png";
     }
 
-    const newCloudinaryAvatar = await uplodOnCloudinary(avatarLocalPath);
+    const newCloudinaryAvatar = await uploadOnCloudinary(avatarLocalPath);
 
     if (!newCloudinaryAvatar.url) {
         throw new ApiError(400, "Error while uploading avatar");
