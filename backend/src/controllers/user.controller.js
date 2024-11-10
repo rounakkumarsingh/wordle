@@ -10,6 +10,7 @@ import jwt from "jsonwebtoken";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import { EMPTY_PROFILE_PICTURE } from "../constant.js";
 
 // Get the directory name of the current module file
 const __filename = fileURLToPath(import.meta.url);
@@ -60,7 +61,7 @@ const registerUser = asyncHandler(async (req, res) => {
         username: username.toLowerCase(),
         email,
         fullName,
-        profilePicture,
+        profilePicture: profilePicture.url,
         password,
     });
 
@@ -154,7 +155,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const findUser = asyncHandler(async (req, res) => {
-    const { username } = req.body;
+    const { username } = req.params;
 
     if (!username) {
         throw new ApiError(400, "Username is required to search!!!");
@@ -269,29 +270,59 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 });
 
 const updateProfilePicture = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file?.path;
+    const profilePictureLocalPath = req.file?.path;
 
-    if (!avatarLocalPath) {
-        avatarLocalPath = path.resolve(__dirname, "../../public/Untitled.png");
+    if (!profilePictureLocalPath) {
+        throw new ApiError(400, "No new profile picture uploaded");
     }
 
-    const newCloudinaryAvatar = await uploadOnCloudinary(avatarLocalPath);
+    const newCloudinaryProfilePicture = await uploadOnCloudinary(
+        profilePictureLocalPath
+    );
 
-    if (!newCloudinaryAvatar.url) {
-        throw new ApiError(400, "Error while uploading avatar");
+    if (!newCloudinaryProfilePicture.url) {
+        throw new ApiError(400, "Error while uploading profile picture");
     }
 
     const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
-            $set: { avatar: newCloudinaryAvatar.url },
+            $set: { profilePicture: newCloudinaryProfilePicture.url },
         },
         { new: true }
     ).select("-password");
-    await deleteFromCloudinary(req.user.profilePicture);
+
+    if (req.user.profilePicture !== EMPTY_PROFILE_PICTURE) {
+        await deleteFromCloudinary(req.user.profilePicture);
+    }
+
     return res
         .status(200)
-        .json(new ApiResponse(200, user, "Avatar updated successfully"));
+        .json(
+            new ApiResponse(200, user, "Profile Picture updated successfully")
+        );
+});
+
+const deleteProfilePicture = asyncHandler(async (req, res) => {
+    if (req.user.profilePicture === EMPTY_PROFILE_PICTURE) {
+        throw new ApiError(400, "No profile image to delete");
+    }
+
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: { profilePicture: EMPTY_PROFILE_PICTURE },
+        },
+        { new: true }
+    ).select("-password");
+
+    await deleteFromCloudinary(req.user.profilePicture);
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, user, "Profile Picture deleted successfully")
+        );
 });
 
 export {
@@ -304,4 +335,5 @@ export {
     getCurrentUser,
     updateAccountDetails,
     updateProfilePicture,
+    deleteProfilePicture,
 };
