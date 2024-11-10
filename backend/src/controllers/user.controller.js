@@ -7,6 +7,13 @@ import User from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+// Get the directory name of the current module file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -44,7 +51,8 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(409, "User with email or username already exists");
     }
 
-    const profilePictureLocalPath = req.file?.path || "./public/Untitled.png";
+    const profilePictureLocalPath =
+        req.file?.path || path.resolve(__dirname, "../../public/Untitled.png");
 
     const profilePicture = await uploadOnCloudinary(profilePictureLocalPath);
 
@@ -264,7 +272,7 @@ const updateProfilePicture = asyncHandler(async (req, res) => {
     const avatarLocalPath = req.file?.path;
 
     if (!avatarLocalPath) {
-        avatarLocalPath = "./public/Untitled.png";
+        avatarLocalPath = path.resolve(__dirname, "../../public/Untitled.png");
     }
 
     const newCloudinaryAvatar = await uploadOnCloudinary(avatarLocalPath);
