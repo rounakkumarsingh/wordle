@@ -1,3 +1,5 @@
+import { WORDS } from "./words.js";
+
 toastr.options = {
     closeButton: false,
     debug: false,
@@ -15,8 +17,6 @@ toastr.options = {
     showMethod: "fadeIn",
     hideMethod: "fadeOut",
 };
-
-import { WORDS } from "./words.js";
 
 let WORD_SIZE = parseInt(localStorage.getItem("WORD_SIZE")) || 5;
 let NUMBER_OF_GUESSES =
