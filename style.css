@@ -56,3 +56,7 @@ h1 {
     cursor: pointer;
     text-transform: uppercase;
 }
+
+.alphabets {
+    width: 40px;
+}
