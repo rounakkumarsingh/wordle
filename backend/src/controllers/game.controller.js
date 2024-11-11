@@ -1,8 +1,8 @@
-import Game from "../models/game.model";
-import User from "../models/user.model";
-import ApiError from "../utils/ApiError";
-import ApiResponse from "../utils/ApiResponse";
-import asyncHandler from "../utils/asyncHandler";
+import Game from "../models/game.model.js";
+import User from "../models/user.model.js";
+import ApiError from "../utils/ApiError.js";
+import ApiResponse from "../utils/ApiResponse.js";
+import asyncHandler from "../utils/asyncHandler.js";
 import {
     calculateAccuracyRate,
     calculateAverageGuessCount,
@@ -10,7 +10,7 @@ import {
     calculateWinStreak,
     currentRunningStreak,
     totalWins,
-} from "../utils/statsCalculator";
+} from "../utils/statsCalculator.js";
 
 const createGame = asyncHandler(async (req, res) => {
     const { answer, maxGuesses } = req.body;

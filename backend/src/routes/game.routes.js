@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyJWT, checkJWT } from "../middlewares/auth.middleware";
+import { verifyJWT, checkJWT } from "../middlewares/auth.middleware.js";
 import {
     addGame,
     createGame,
@@ -7,7 +7,8 @@ import {
     getStats,
     togglePrivate,
     getGames,
-} from "../controllers/game.controller";
+    addMove,
+} from "../controllers/game.controller.js";
 
 const gameRouter = Router();
 
