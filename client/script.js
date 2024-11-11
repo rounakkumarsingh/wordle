@@ -25,7 +25,6 @@ let guessesRemaining = NUMBER_OF_GUESSES;
 let currentGuess = [];
 let nextLetter = 0;
 let rightGuessString =
-    "favor" ||
     WORDS[`size-${WORD_SIZE}`][
         Math.floor(Math.random() * WORDS[`size-${WORD_SIZE}`].length)
     ];
