@@ -28,4 +28,13 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
     }
 });
 
-export default verifyJWT;
+const checkJWT = (req, res, next) => {
+    verifyJWT(req, res, (err) => {
+        if (err) {
+            req.user = undefined;
+        }
+        next();
+    });
+};
+
+export { verifyJWT, checkJWT };

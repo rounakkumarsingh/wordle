@@ -37,6 +37,17 @@ const userSchema = new Schema(
             type: String,
             default: null,
         },
+        games: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "Game",
+            },
+        ],
+        statsUsingPrivate: {
+            type: Boolean,
+            default: false,
+            required: true,
+        },
     },
     { timestamps: true }
 );

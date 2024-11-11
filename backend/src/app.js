@@ -3,6 +3,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import ApiError from "./utils/ApiError.js";
 import userRouter from "./routes/user.routes.js";
+import gameRouter from "./routes/game.routes.js";
+import leaderboardRouter from "./routes/leaderboard.routes.js";
 
 const app = express();
 
@@ -19,6 +21,8 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/games", gameRouter);
+app.use("/api/v1/leaderboard", leaderboardRouter);
 
 app.use((err, _, res, __) => {
     const error =
