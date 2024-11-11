@@ -25,6 +25,7 @@ let guessesRemaining = NUMBER_OF_GUESSES;
 let currentGuess = [];
 let nextLetter = 0;
 let rightGuessString =
+    "favor" ||
     WORDS[`size-${WORD_SIZE}`][
         Math.floor(Math.random() * WORDS[`size-${WORD_SIZE}`].length)
     ];
@@ -150,7 +151,7 @@ function checkGuess() {
         if (!status[i]) {
             if (rightGuess.includes(currentGuess[i])) {
                 let index = rightGuess.indexOf(currentGuess[i]);
-                if (status[index] === 0) {
+                if (index >= 0 && index < WORD_SIZE && status[i] === 0) {
                     status[i] = 1;
                     rightGuess[index] = null;
                 } else {
