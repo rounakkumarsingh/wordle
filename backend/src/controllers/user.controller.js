@@ -29,6 +29,42 @@ const generateAccessAndRefreshToken = async (userId) => {
     }
 };
 
+/**
+ * @swagger
+ * /users/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullName:
+ *                 type: string
+ *                 required: true
+ *               email:
+ *                 type: string
+ *                 required: true
+ *               username:
+ *                 type: string
+ *                 required: true
+ *               password:
+ *                 type: string
+ *                 required: true
+ *               profile-picture:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *       400:
+ *         description: Bad request
+ *       409:
+ *         description: Conflict
+ */
 const registerUser = asyncHandler(async (req, res) => {
     const { fullName, email, password, username } = req.body;
     if (
@@ -77,6 +113,42 @@ const registerUser = asyncHandler(async (req, res) => {
         );
 });
 
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *                 required: true
+ *             required:
+ *               - password
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *         headers:
+ *           Set-Cookie:
+ *             description: Cookies containing access and refresh tokens. These cookies are HTTP-only and secure.
+ *             schema:
+ *               type: string
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: User not found
+ *     description: Either username or email must be provided along with the password to login.
+ */
 const loginUser = asyncHandler(async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -124,6 +196,24 @@ const loginUser = asyncHandler(async (req, res) => {
         );
 });
 
+/**
+ * @swagger
+ * /users/logout:
+ *   post:
+ *     summary: Logout a user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User logged out successfully
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 const logoutUser = asyncHandler(async (req, res) => {
     const userId = req.user._id;
     const updatedUser = await User.findByIdAndUpdate(
@@ -148,6 +238,27 @@ const logoutUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, "User logged out successfully"));
 });
 
+/**
+ * @swagger
+ * /users/{username}:
+ *   get:
+ *     summary: Find user by username
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Username to find
+ *     responses:
+ *       200:
+ *         description: User found successfully
+ *       400:
+ *         description: Username is required
+ *       404:
+ *         description: User not found
+ */
 const findUser = asyncHandler(async (req, res) => {
     const { username } = req.params;
 
@@ -168,6 +279,28 @@ const findUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, user, "User found successfully"));
 });
 
+/**
+ * @swagger
+ * /users/refresh-token:
+ *   post:
+ *     summary: Refresh access token
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Access token refreshed
+ *       401:
+ *         description: Unauthorized
+ *     description: Either cookie or request body must contain the refresh token.
+ */
 const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingRefreshToken =
         req.cookies?.refreshToken || req.body.refreshToken;
@@ -209,6 +342,33 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /users/change-password:
+ *   post:
+ *     summary: Change current password
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               oldPassword:
+ *                 type: string
+ *                 required: true
+ *               newPassword:
+ *                 type: string
+ *                 required: true
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *       400:
+ *         description: Invalid old password
+ */
 const changeCurrentPassword = asyncHandler(async (req, res) => {
     const { oldPassword, newPassword } = req.body;
 
@@ -229,6 +389,18 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {}, "Password changed successfully"));
 });
 
+/**
+ * @swagger
+ * /users/current-user:
+ *   get:
+ *     summary: Get current user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user fetched successfully
+ */
 const getCurrentUser = asyncHandler(async (req, res) => {
     return res
         .status(200)
@@ -237,6 +409,34 @@ const getCurrentUser = asyncHandler(async (req, res) => {
         );
 });
 
+/**
+ * @swagger
+ * /users/update-account:
+ *   patch:
+ *     summary: Update account details
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               username:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Account details updated successfully
+ *       400:
+ *         description: Bad request
+ *      description: atleast one of fullName, email, username is required.
+ */
 const updateAccountDetails = asyncHandler(async (req, res) => {
     const { fullName, email, username } = req.body;
 
@@ -263,6 +463,31 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
         );
 });
 
+/**
+ * @swagger
+ * /users/update-profile-picture:
+ *   patch:
+ *     summary: Update profile picture
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               profile-picture:
+ *                 type: string
+ *                 required: true
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Profile picture updated successfully
+ *       400:
+ *         description: Bad request
+ */
 const updateProfilePicture = asyncHandler(async (req, res) => {
     const profilePictureLocalPath = req.file?.path;
 
@@ -297,6 +522,20 @@ const updateProfilePicture = asyncHandler(async (req, res) => {
         );
 });
 
+/**
+ * @swagger
+ * /users/remove-profile-picture:
+ *   delete:
+ *     summary: Delete profile picture
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Profile picture deleted successfully
+ *       400:
+ *         description: Bad request
+ */
 const deleteProfilePicture = asyncHandler(async (req, res) => {
     if (req.user.profilePicture === EMPTY_PROFILE_PICTURE) {
         throw new ApiError(400, "No profile image to delete");

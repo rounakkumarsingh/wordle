@@ -3,6 +3,58 @@ import { hash, compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - fullName
+ *         - email
+ *         - username
+ *         - password
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The auto-generated id of the user
+ *         fullName:
+ *           type: string
+ *           description: The full name of the user
+ *         email:
+ *           type: string
+ *           description: The email address of the user
+ *         username:
+ *           type: string
+ *           description: The username chosen by the user
+ *         password:
+ *           type: string
+ *           description: The password for the user account
+ *         profilePicture:
+ *           type: string
+ *           description: URL of the profile picture
+ *         refreshToken:
+ *           type: string
+ *           description: The refresh token for the user
+ *         games:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: List of game IDs associated with the user
+ *         statsUsingPrivate:
+ *           type: boolean
+ *           description: Indicates if the user's stats are private
+ *       example:
+ *         id: d5fE_asz
+ *         fullName: John Doe
+ *         email: john.doe@example.com
+ *         username: johndoe
+ *         password: password123
+ *         profilePicture: http://example.com/profile.jpg
+ *         refreshToken: null
+ *         games: []
+ *         statsUsingPrivate: false
+ */
 const userSchema = new Schema(
     {
         username: {
@@ -10,7 +62,7 @@ const userSchema = new Schema(
             required: true,
             unique: true,
             lowercase: true,
-            nexttrim: true,
+            trim: true,
             index: true,
         },
         email: {

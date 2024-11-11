@@ -5,6 +5,8 @@ import ApiError from "./utils/ApiError.js";
 import userRouter from "./routes/user.routes.js";
 import gameRouter from "./routes/game.routes.js";
 import leaderboardRouter from "./routes/leaderboard.routes.js";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
 const app = express();
 
@@ -14,6 +16,32 @@ app.use(
         credentials: true,
     })
 );
+
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Wordle API",
+            version: "1.0.0",
+            description: "API documentation for the Wordle application",
+        },
+        servers: [
+            {
+                url: "http://localhost:5030/api/v1",
+            },
+        ],
+    },
+    apis: [
+        "./src/routes/*.js",
+        "./src/models/*.js",
+        "./controllers/*.js",
+        "./middlewares/*.js",
+    ], // Paths to files containing OpenAPI definitions
+};
+
+const specs = swaggerJsdoc(options);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));

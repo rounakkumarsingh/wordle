@@ -20,16 +20,53 @@ const statsFunctions = {
     calculatePoints,
 };
 
+/**
+ * @swagger
+ * /leaderboard/{timeFrame}/{property}:
+ *   get:
+ *     summary: Get leaderboard
+ *     tags: [Leaderboard]
+ *     parameters:
+ *       - in: path
+ *         name: timeFrame
+ *         schema:
+ *           type: string
+ *           enum: [allTime, thisYear, thisMonth, today]
+ *         required: true
+ *         description: Time frame for leaderboard
+ *       - in: path
+ *         name: property
+ *         schema:
+ *           type: string
+ *           enum: [totalWins, calculateWinStreak, currentRunningStreak, calculateAverageGuessCount, calculateAccuracyRate, calculatePoints]
+ *         required: true
+ *         description: Property for leaderboard
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: conditions
+ *         schema:
+ *           type: string
+ *         description: Additional conditions for filtering
+ *     responses:
+ *       200:
+ *         description: Leaderboard fetched successfully
+ *       400:
+ *         description: Bad request
+ */
 export const getLeaderBoard = asyncHandler(async (req, res) => {
     const { timeFrame, property } = req.params;
     const { page = 1, conditions = "{}" } = req.query;
 
     if (
-        !["all time", "this year", "this month", "today"].includes(timeFrame) ||
+        !["allTime", "thisYear", "thisMonth", "today"].includes(timeFrame) ||
         !Object.keys(statsFunctions).includes(property)
     ) {
         throw new ApiError(
-            `timeFrame should be in ["all time", "this year", "this month", "today"] && property should be in ${Object.keys(statsFunctions)}`
+            `timeFrame should be in ["allTime", "thisYear", "thisMonth", "today"] && property should be in ${Object.keys(statsFunctions)}`
         );
     }
 
@@ -45,7 +82,7 @@ export const getLeaderBoard = asyncHandler(async (req, res) => {
                 },
             };
             break;
-        case "this month":
+        case "thisMonth":
             matchStage = {
                 "games.startTime": {
                     $gte: new Date(now.getFullYear(), now.getMonth(), 1),
@@ -53,7 +90,7 @@ export const getLeaderBoard = asyncHandler(async (req, res) => {
                 },
             };
             break;
-        case "this year":
+        case "thisYear":
             matchStage = {
                 "games.startTime": {
                     $gte: new Date(now.getFullYear(), 0, 1),
@@ -61,7 +98,7 @@ export const getLeaderBoard = asyncHandler(async (req, res) => {
                 },
             };
             break;
-        case "all time":
+        case "allTime":
         default:
             matchStage = {};
             break;

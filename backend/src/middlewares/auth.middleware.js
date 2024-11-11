@@ -3,6 +3,35 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import User from "../models/user.model.js";
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
+
+/**
+ * @swagger
+ * components:
+ *   responses:
+ *     UnauthorizedError:
+ *       description: Access token is missing or invalid
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 example: Unauthorized request
+ *               statusCode:
+ *                 type: integer
+ *                 example: 401
+ */
+
 const verifyJWT = asyncHandler(async (req, _, next) => {
     try {
         const token =
