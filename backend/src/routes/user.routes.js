@@ -273,6 +273,6 @@ router.route("/remove-profile-picture").delete(verifyJWT, deleteProfilePicture);
  *       404:
  *         description: User not found
  */
-router.route("/:username").get(findUser);
+router.route("/find/:username").get(findUser);
 
 export default router;
