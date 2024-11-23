@@ -28,7 +28,6 @@ let rightGuessString =
     WORDS[`size-${WORD_SIZE}`][
         Math.floor(Math.random() * WORDS[`size-${WORD_SIZE}`].length)
     ];
-console.log(rightGuessString);
 
 function setBoard() {
     const board = document.getElementById("board");
@@ -165,13 +164,15 @@ function checkGuess() {
             status[i] === 2 ? "green" : status[i] === 1 ? "yellow" : "grey";
         let box = row.children[i];
         let delay = 250 * i;
-        setTimeout(() => {
-            animateCSS(box, "flipInX");
-            box.style.backgroundColor = letterColor;
-            shadeKeyBoard(currentGuess[i], letterColor);
-        }, delay);
+        setTimeout(
+            ((i, letter) => () => {
+                animateCSS(box, "flipInX");
+                box.style.backgroundColor = letterColor;
+                shadeKeyBoard(letter, letterColor);
+            })(i, currentGuess[i]),
+            delay
+        );
     }
-
     if (guessString === rightGuessString) {
         toastr.success(
             `You guessed right! Game over!" + "<br><button type="button" class="try-again-btn">Try Again</button>`,
