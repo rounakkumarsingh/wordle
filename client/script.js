@@ -1,5 +1,5 @@
 async function getWordsByFrequency(length, freqLevel) {
-    const limit = 1;
+    const limit = 100;
     try {
         if (length < 1 || freqLevel < 1 || freqLevel > 10) {
             throw new Error(
@@ -91,7 +91,8 @@ setTimeout(async () => {
 
 function setBoard() {
     const board = document.getElementById("board");
-
+    const toasts = document.getElementById("toast-container");
+    if (toasts) toasts.innerHTML = "";
     for (let i = 0; i < NUMBER_OF_GUESSES; ++i) {
         let row = document.createElement("div");
         row.className = "guess-row";
@@ -104,7 +105,48 @@ function setBoard() {
         board.appendChild(row);
     }
 }
+
+function loadSettings() {
+    const wordSizeOptions = document.querySelectorAll("#wordSize > option");
+    const currentWordSize = parseInt(localStorage.getItem("WORD_SIZE"));
+    if (currentWordSize) {
+        wordSizeOptions.forEach((element) => {
+            if (element.value == currentWordSize) {
+                element.setAttribute("selected", "selected");
+            } else {
+                element.removeAttribute("selected");
+            }
+        });
+    }
+    const guessCountOptions = document.querySelectorAll("#guessCount > option");
+    const currentGuessOption = parseInt(
+        localStorage.getItem("NUMBER_OF_GUESSES")
+    );
+    if (currentGuessOption) {
+        guessCountOptions.forEach((element) => {
+            if (element.value == currentGuessOption) {
+                element.setAttribute("selected", "selected");
+            } else {
+                element.removeAttribute("selected");
+            }
+        });
+    }
+
+    const levelOptions = document.querySelectorAll("#level > option");
+    const currentLevel = parseInt(localStorage.getItem("difficultyLevel"));
+    if (currentLevel) {
+        levelOptions.forEach((element) => {
+            if (element.value == currentLevel) {
+                element.setAttribute("selected", "selected");
+            } else {
+                element.removeAttribute("selected");
+            }
+        });
+    }
+}
+
 setBoard();
+loadSettings();
 
 document.addEventListener("keyup", async (e) => {
     if (guessesRemaining === 0) {
@@ -155,7 +197,9 @@ function insertLetter(pressedKey) {
     pressedKey = pressedKey.toLowerCase();
 
     let row =
-        document.getElementsByClassName("guess-row")[6 - guessesRemaining];
+        document.getElementsByClassName("guess-row")[
+            NUMBER_OF_GUESSES - guessesRemaining
+        ];
     let box = row.children[nextLetter];
     animateCSS(box, "pulse");
     box.textContent = pressedKey;
@@ -166,7 +210,9 @@ function insertLetter(pressedKey) {
 
 function deleteLetter() {
     let row =
-        document.getElementsByClassName("guess-row")[6 - guessesRemaining];
+        document.getElementsByClassName("guess-row")[
+            NUMBER_OF_GUESSES - guessesRemaining
+        ];
     let box = row.children[nextLetter - 1];
     box.textContent = "";
     box.classList.remove("filled-box");
@@ -220,7 +266,7 @@ async function checkGuess() {
 
     for (let i = 0; i < WORD_SIZE; ++i) {
         let letterColor =
-            status[i] === 2 ? "green" : status[i] === 1 ? "yellow" : "grey";
+            status[i] === 2 ? "green" : status[i] === 1 ? "#cfcf00" : "grey";
         let box = row.children[i];
         let delay = 250 * i;
         setTimeout(
@@ -245,9 +291,7 @@ async function checkGuess() {
         );
         document
             .querySelector(".try-again-btn")
-            .addEventListener("click", () => {
-                location.reload();
-            });
+            .addEventListener("click", restartGame);
         guessesRemaining = 0;
         return;
     } else {
@@ -271,6 +315,9 @@ async function checkGuess() {
                 timeOut: 0,
                 extendedTimeOut: 0,
             });
+            document
+                .querySelector(".try-again-btn")
+                .addEventListener("click", restartGame);
         }
     }
 }
@@ -283,7 +330,7 @@ function shadeKeyBoard(letter, color) {
                 return;
             }
 
-            if (oldColor === "yellow" && color !== "green") {
+            if (oldColor === "#cfcf00" && color !== "green") {
                 return;
             }
 
@@ -332,9 +379,9 @@ async function hasMeaning(word) {
     });
 }
 
-const animateCSS = (element, animation, prefix = "animate__") =>
+const animateCSS = (element, animation, prefix = "animate__") => {
     // We create a Promise and return it
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const animationName = `${prefix}${animation}`;
         // const node = document.querySelector(element);
         const node = element;
@@ -353,3 +400,93 @@ const animateCSS = (element, animation, prefix = "animate__") =>
             once: true,
         });
     });
+};
+
+const settingsBtn = document.getElementById("settings-btn");
+const modal = document.getElementById("settings-modal");
+const applyBtn = document.getElementById("apply-btn");
+const resetBtn = document.getElementById("reset-btn");
+
+settingsBtn.addEventListener("click", () => {
+    modal.style.display = "flex";
+});
+
+applyBtn.addEventListener("click", () => {
+    const wordSize = document.getElementById("wordSize").value;
+    const guessCount = document.getElementById("guessCount").value;
+    const difficultyLevel = document.getElementById("level").value;
+
+    localStorage.setItem("WORD_SIZE", wordSize);
+    localStorage.setItem("NUMBER_OF_GUESSES", guessCount);
+    localStorage.setItem("difficultyLevel", difficultyLevel);
+
+    WORD_SIZE = parseInt(wordSize);
+    NUMBER_OF_GUESSES = parseInt(guessCount);
+    level = parseInt(difficultyLevel);
+    document.getElementById("settings-modal").style.display = "none";
+
+    restartGame();
+});
+
+resetBtn.addEventListener("click", () => {
+    unloadSettings();
+});
+
+window.addEventListener("click", (e) => {
+    if (e.target === modal) {
+        modal.style.display = "none";
+    }
+});
+
+function resetKeyBoard() {
+    for (const elem of document.getElementsByClassName("keyboard-button")) {
+        elem.style.backgroundColor = "";
+    }
+}
+
+function restartGame() {
+    rightGuessString = "";
+    setTimeout(async () => {
+        rightGuessString = await getWordsByFrequency(WORD_SIZE, level);
+        setBoard();
+        resetKeyBoard();
+    }, 0);
+    const board = document.getElementById("board");
+    board.innerHTML = "";
+    guessesRemaining = NUMBER_OF_GUESSES;
+    currentGuess = [];
+    nextLetter = 0;
+    loadSettings();
+}
+
+function unloadSettings() {
+    const wordSizeOptions = document.querySelectorAll("#wordSize > option");
+    wordSizeOptions.forEach((element) => {
+        console.log(element, element.value);
+        if (element.innerHTML.includes("(Default)")) {
+            element.setAttribute("selected", "selected");
+        } else {
+            element.removeAttribute("selected");
+        }
+    });
+
+    const guessCountOptions = document.querySelectorAll("#guessCount > option");
+    guessCountOptions.forEach((element) => {
+        console.log(element, element.innerHTML);
+        if (element.innerHTML.includes("Default")) {
+            element.setAttribute("selected", "selected");
+        } else {
+            element.removeAttribute("selected");
+        }
+    });
+
+    const levelOptions = document.querySelectorAll("#level > option");
+    levelOptions.forEach((element) => {
+        console.log(element, element.innerHTML);
+        if (element.innerHTML.includes("(Default)")) {
+            element.setAttribute("selected", "selected");
+        } else {
+            element.removeAttribute("selected");
+        }
+    });
+}
