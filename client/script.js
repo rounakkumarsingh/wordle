@@ -266,13 +266,18 @@ async function checkGuess() {
 
     for (let i = 0; i < WORD_SIZE; ++i) {
         let letterColor =
-            status[i] === 2 ? "green" : status[i] === 1 ? "#cfcf00" : "grey";
+            status[i] === 2
+                ? "#4CAF50"
+                : status[i] === 1
+                ? "rgb(181, 159, 59)"
+                : "#333333";
         let box = row.children[i];
         let delay = 250 * i;
         setTimeout(
             ((i, letter) => () => {
                 animateCSS(box, "flipInX");
                 box.style.backgroundColor = letterColor;
+                box.style.borderColor = "transparent";
                 shadeKeyBoard(letter, letterColor);
             })(i, currentGuess[i]),
             delay

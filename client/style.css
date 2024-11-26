@@ -1,5 +1,5 @@
 body {
-    background-color: #121212;
+    background-color: #0f172a;
     color: #ffffff;
 }
 
@@ -16,7 +16,7 @@ h1 {
 }
 
 .guess-box {
-    border: 2px solid #ffffff;
+    border: 2px solid #333333;
     margin: 2px;
     font-size: 2.5rem;
     font-weight: 700;
@@ -26,12 +26,9 @@ h1 {
     justify-content: center;
     align-items: center;
     text-transform: uppercase;
-    background-color: #333333;
+    background-color: #0f172a;
     color: #ffffff;
-}
-
-.filled-box {
-    border: 2px solid rgb(93, 93, 93);
+    border-radius: 6px;
 }
 
 .guess-row {
