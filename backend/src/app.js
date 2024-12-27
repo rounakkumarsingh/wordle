@@ -25,11 +25,6 @@ const options = {
             version: "1.0.0",
             description: "API documentation for the Wordle application",
         },
-        servers: [
-            {
-                url: "http://localhost:5030/api/v1",
-            },
-        ],
     },
     apis: [
         "./src/routes/*.js",
