@@ -42,7 +42,7 @@ async function getWordsByFrequency(length, freqLevel) {
             randomWords.push(tempBand[randomIndex]);
             tempBand.splice(randomIndex, 1);
         }
-
+        console.log(randomWords[0].word);
         return randomWords[0].word;
     } catch (error) {
         console.error("Error fetching words:", error);
@@ -83,11 +83,12 @@ if (!localStorage.getItem("difficultyLevel")) {
 }
 let guessesRemaining = NUMBER_OF_GUESSES;
 let currentGuess = [];
-let nextLetter = 0;
+let nextLetter = 1;
 let rightGuessString = "";
 setTimeout(async () => {
     rightGuessString = await getWordsByFrequency(WORD_SIZE, level);
 }, 0);
+let isChecking = false;
 
 function setBoard() {
     const board = document.getElementById("board");
@@ -97,11 +98,38 @@ function setBoard() {
         let row = document.createElement("div");
         row.className = "guess-row";
 
+        let dummyLoader = document.createElement("div");
+        dummyLoader.className = "spinner-grow text-light";
+        dummyLoader.setAttribute("role", "status");
+
+        let dmy = document.createElement("span");
+        dmy.className = "sr-only";
+        dummyLoader.appendChild(dmy);
+
+        dummyLoader.style.setProperty("visibility", "hidden", "important");
+        row.appendChild(dummyLoader);
+
         for (let j = 0; j < WORD_SIZE; j++) {
             let box = document.createElement("div");
             box.className = "guess-box";
+            if (j === WORD_SIZE - 1) {
+                box.style.marginRight = "20px";
+            } else if (j === 0) {
+                box.style.marginLeft = "20px";
+            }
             row.appendChild(box);
         }
+        let loader = document.createElement("div");
+        loader.className = "spinner-grow text-light";
+        loader.setAttribute("role", "status");
+
+        let spinnerText = document.createElement("span");
+        spinnerText.className = "sr-only";
+        loader.appendChild(spinnerText);
+
+        loader.style.visibility = "hidden";
+
+        row.appendChild(loader);
         board.appendChild(row);
     }
 }
@@ -149,12 +177,16 @@ setBoard();
 loadSettings();
 
 document.addEventListener("keyup", async (e) => {
+    console.log("Keyup registered: ", e.key);
+
+    if (isChecking) return;
+
     if (guessesRemaining === 0) {
         return;
     }
 
     let pressedKey = String(e.key);
-    if (pressedKey === "Backspace" && nextLetter !== 0) {
+    if (pressedKey === "Backspace" && nextLetter > 1) {
         deleteLetter();
         return;
     }
@@ -191,7 +223,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
 });
 
 function insertLetter(pressedKey) {
-    if (nextLetter === WORD_SIZE) {
+    if (nextLetter === WORD_SIZE + 1) {
         return;
     }
     pressedKey = pressedKey.toLowerCase();
@@ -221,24 +253,34 @@ function deleteLetter() {
 }
 
 async function checkGuess() {
+    if (isChecking) return;
+    isChecking = true;
     let row =
         document.getElementsByClassName("guess-row")[
             NUMBER_OF_GUESSES - guessesRemaining
         ];
+    console.log(row);
+
     let guessString = currentGuess.join("");
+    console.log(guessString);
+
     const isValid = await hasMeaning(guessString);
     let rightGuess = Array.from(rightGuessString);
+    console.log(rightGuess);
+
     if (guessString.length != WORD_SIZE) {
         toastr.error(
             `Not enough letters! Enter ${
                 WORD_SIZE - guessString.length
             } more letters`
         );
+        isChecking = false;
         return;
     }
 
     if (!isValid) {
         toastr.error("Not in my word list");
+        isChecking = false;
         return;
     }
 
@@ -264,7 +306,7 @@ async function checkGuess() {
         }
     }
 
-    for (let i = 0; i < WORD_SIZE; ++i) {
+    for (let i = 1; i <= WORD_SIZE; ++i) {
         let letterColor =
             status[i] === 2
                 ? "#4CAF50"
@@ -298,11 +340,12 @@ async function checkGuess() {
             .querySelector(".try-again-btn")
             .addEventListener("click", restartGame);
         guessesRemaining = 0;
+        isChecking = false;
         return;
     } else {
         --guessesRemaining;
         currentGuess = [];
-        nextLetter = 0;
+        nextLetter = 1;
         if (guessesRemaining === 0) {
             toastr.error(
                 "You've run out of guesses! Game over!" +
@@ -324,6 +367,7 @@ async function checkGuess() {
                 .querySelector(".try-again-btn")
                 .addEventListener("click", restartGame);
         }
+        isChecking = false;
     }
 }
 
