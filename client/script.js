@@ -42,7 +42,6 @@ async function getWordsByFrequency(length, freqLevel) {
             randomWords.push(tempBand[randomIndex]);
             tempBand.splice(randomIndex, 1);
         }
-        console.log(randomWords[0].word);
         return randomWords[0].word;
     } catch (error) {
         console.error("Error fetching words:", error);
@@ -177,8 +176,6 @@ setBoard();
 loadSettings();
 
 document.addEventListener("keyup", async (e) => {
-    console.log("Keyup registered: ", e.key);
-
     if (isChecking) return;
 
     if (guessesRemaining === 0) {
@@ -259,14 +256,11 @@ async function checkGuess() {
         document.getElementsByClassName("guess-row")[
             NUMBER_OF_GUESSES - guessesRemaining
         ];
-    console.log(row);
 
     let guessString = currentGuess.join("");
-    console.log(guessString);
 
     const isValid = await hasMeaning(guessString);
     let rightGuess = Array.from(rightGuessString);
-    console.log(rightGuess);
 
     if (guessString.length != WORD_SIZE) {
         toastr.error(
@@ -511,7 +505,6 @@ function restartGame() {
 function unloadSettings() {
     const wordSizeOptions = document.querySelectorAll("#wordSize > option");
     wordSizeOptions.forEach((element) => {
-        console.log(element, element.value);
         if (element.innerHTML.includes("(Default)")) {
             element.setAttribute("selected", "selected");
         } else {
@@ -521,7 +514,6 @@ function unloadSettings() {
 
     const guessCountOptions = document.querySelectorAll("#guessCount > option");
     guessCountOptions.forEach((element) => {
-        console.log(element, element.innerHTML);
         if (element.innerHTML.includes("Default")) {
             element.setAttribute("selected", "selected");
         } else {
@@ -531,7 +523,6 @@ function unloadSettings() {
 
     const levelOptions = document.querySelectorAll("#level > option");
     levelOptions.forEach((element) => {
-        console.log(element, element.innerHTML);
         if (element.innerHTML.includes("(Default)")) {
             element.setAttribute("selected", "selected");
         } else {

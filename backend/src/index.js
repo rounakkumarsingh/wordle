@@ -15,7 +15,7 @@ dotenv.config({
                 `Server is running on port ${process.env.PORT ?? 5030}`
             );
         });
-        console.log(server);
+        if (process.env.NODE_ENV === "development") console.log(server);
     } catch (error) {
         console.log("MONGO CONNECTION ERROR: ", error);
         process.exit(1);
