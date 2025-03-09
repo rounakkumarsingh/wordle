@@ -7,6 +7,7 @@ import UserGuesses from "../UserGuesses";
 import Banner from "../Banner";
 import { NUM_OF_GUESSES_ALLOWED } from "../../constants";
 import { checkGuess } from "../../utils/game-helpers";
+import Keyboard from "../Keyboard";
 
 const answer = sample(WORDS);
 console.log({ answer });
@@ -44,6 +45,7 @@ function Game() {
 			)}
 			<UserGuesses userGuesses={userGuesses} />
 			<GuessInput addUserGuesss={addGuess} gameOver={gameOver} />
+			<Keyboard userGuesses={userGuesses} />
 		</>
 	);
 }
