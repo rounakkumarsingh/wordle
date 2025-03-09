@@ -9,12 +9,17 @@ import { NUM_OF_GUESSES_ALLOWED } from "../../constants";
 import { checkGuess } from "../../utils/game-helpers";
 import Keyboard from "../Keyboard";
 
-const answer = sample(WORDS);
-console.log({ answer });
-
 function Game() {
+	const [answer, setAnswer] = useState(() => sample(WORDS));
 	const [userGuesses, setUserGuesses] = useState([]);
 	const [gameOver, setGameOver] = useState(false);
+
+	function handleRestart() {
+		const newAnswer = sample(WORDS);
+		setAnswer(newAnswer);
+		setUserGuesses([]);
+		setGameOver(false);
+	}
 
 	const addGuess = (guess) => {
 		if (userGuesses.length === NUM_OF_GUESSES_ALLOWED) return;
@@ -32,6 +37,7 @@ function Game() {
 		<>
 			{gameOver && (
 				<Banner
+					handleRestart={handleRestart}
 					type={
 						userGuesses[userGuesses.length - 1]
 							.map((item) => item.letter)

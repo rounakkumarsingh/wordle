@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React from "react";
 import styles from "./Banner.module.css";
 
-function Banner({ type = "", answer, userGuessesCount } = {}) {
+function Banner({ type = "", answer, userGuessesCount, handleRestart } = {}) {
 	let content;
 	if (type === "happy") {
 		content = (
@@ -23,6 +23,7 @@ function Banner({ type = "", answer, userGuessesCount } = {}) {
 	return (
 		<div className={clsx(styles[type], styles.banner)}>
 			<p>{content}</p>
+			<button onClick={handleRestart}>Play Again!!</button>
 		</div>
 	);
 }

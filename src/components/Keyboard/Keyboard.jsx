@@ -37,8 +37,6 @@ function Keyboard({ userGuesses }) {
 	];
 
 	const keyboardStatus = getKeyboardStatus(userGuesses);
-	console.log(userGuesses, keyboardStatus);
-
 	return (
 		<div className={clsx(styles.keyboard)}>
 			{ROWS.map((keyboardRow, index) => (
