@@ -1,0 +1,39 @@
+.cell {
+	position: relative;
+	width: 20%;
+	display: grid;
+	place-content: center;
+	aspect-ratio: 1 / 1;
+	border: 2px solid var(--color-gray-700);
+	border-radius: var(--radius);
+	font-size: 2rem;
+}
+
+.cell:first-of-type {
+	--radius: 4px 0px 0px 0px;
+}
+.cell:last-of-type {
+	--radius: 0px 4px 0px 0px;
+}
+.cell:last-of-type {
+	--radius: 0px 0px 4px 0px;
+}
+.cell:first-of-type {
+	--radius: 0px 0px 0px 4px;
+}
+
+.correct {
+	background: var(--color-success);
+	border-color: var(--color-success);
+	color: white;
+}
+.incorrect {
+	background: var(--color-gray-300);
+	border-color: var(--color-gray-300);
+	color: white;
+}
+.misplaced {
+	background: var(--color-warning);
+	border-color: var(--color-warning);
+	color: white;
+}
