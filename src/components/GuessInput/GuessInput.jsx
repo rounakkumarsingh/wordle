@@ -21,9 +21,12 @@ function GuessInput({ addUserGuesss, gameOver }) {
 				value={guess}
 				minLength={5}
 				maxLength={5}
+				pattern="[a-zA-Z]{5}"
+				title="5 letter word"
 				disabled={gameOver}
 				onChange={(event) => setGuess(event.target.value.toUpperCase())}
 			></input>
+			{/* The issue occurs when the .toUpperCase() method actually changes the characters entered.This isn't a problem with React specifically; I was able to reproduce the same issue in vanilla JavaScript and HTML. For some reason, transforming the value on an input causes the minLength attribute to fail. */}
 		</form>
 	);
 }
