@@ -1,5 +1,5 @@
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "motion/react";
 import { range } from "../../utils";
 import styles from "./Guess.module.css";
 import clsx from "clsx";
@@ -8,25 +8,24 @@ function Guess({ guessInput = "" } = {}) {
 	return (
 		<>
 			{range(5).map((index) => (
-				<AnimatePresence key={index}>
-					<motion.span
-						className={clsx(
-							styles.cell,
-							styles[guessInput?.[index]?.status]
-						)}
-						initial={{ rotateX: 0 }}
-						animate={guessInput?.[index] ? { rotateX: 360 } : { rotateX: 0 }}
-						transition={{
-							type: "spring",
-							stiffness: 260,
-							damping: 20,
-							delay: index * 0.1,
-						}}
-						style={{ transformStyle: "preserve-3d" }}
-					>
-						{guessInput[index]?.letter ?? " "}
-					</motion.span>
-				</AnimatePresence>
+				<motion.span
+					key={index}
+					className={clsx(
+						styles.cell,
+						styles[guessInput?.[index]?.status]
+					)}
+					initial={guessInput?.[index] ? { opacity: 0, scale: 0.5 } : false}
+					animate={guessInput?.[index] ? { 
+						opacity: 1,
+						scale: 1
+					} : false}
+					transition={{
+						duration: 0.3,
+						delay: guessInput?.[index] ? index * 0.2 : 0
+					}}
+				>
+					{guessInput[index]?.letter ?? " "}
+				</motion.span>
 			))}
 		</>
 	);

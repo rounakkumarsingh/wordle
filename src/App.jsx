@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import Game from './components/Game';
-import Layout from './components/Layout/Layout';
-import ThemeToggle from './components/ThemeToggle/ThemeToggle';
+import Layout from './components/Layout';
+import Header from './components/Header/Header';
 import { ThemeProvider } from './context/ThemeContext';
 import styles from './App.module.css';
 
@@ -15,8 +15,10 @@ function App() {
 					animate={{ opacity: 1 }}
 					transition={{ duration: 0.5 }}
 				>
-					<ThemeToggle />
-					<Game />
+					<Header />
+					<div className={styles.gameWrapper}>
+						<Game />
+					</div>
 				</motion.div>
 			</Layout>
 		</ThemeProvider>
