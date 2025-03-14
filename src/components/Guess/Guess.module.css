@@ -1,7 +1,7 @@
 .cell {
 	width: 62px;
 	height: 62px;
-	border: 2px solid var(--color-gray-700);
+	border: 2px solid var(--color-border);
 	font-size: 2rem;
 	font-weight: bold;
 	display: flex;
@@ -13,24 +13,19 @@
 	transform-style: preserve-3d;
 	backface-visibility: visible;
 	border-radius: var(--radius, 4px);
-	transition: border-color 0.15s ease;
+	transition: all var(--transition-speed) ease-in-out;
 }
 
 .cell:hover {
-	transform: scale(1.05);
+	border-color: var(--color-gray-500);
 }
 
 .cell:first-of-type {
-	--radius: 4px 0px 0px 0px;
+	--radius: 4px 0px 0px 4px;
 }
+
 .cell:last-of-type {
-	--radius: 0px 4px 0px 0px;
-}
-.cell:last-of-type {
-	--radius: 0px 0px 4px 0px;
-}
-.cell:first-of-type {
-	--radius: 0px 0px 0px 4px;
+	--radius: 0px 4px 4px 0px;
 }
 
 .correct {
@@ -38,11 +33,13 @@
 	border-color: var(--color-success);
 	color: white;
 }
+
 .incorrect {
 	background: var(--color-gray-300);
 	border-color: var(--color-gray-300);
 	color: white;
 }
+
 .misplaced {
 	background: var(--color-warning);
 	border-color: var(--color-warning);

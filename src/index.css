@@ -1,41 +1,93 @@
 /*
   Theme and global variables
 */
-html {
-	overflow-y: scroll;
-
+:root {
+	/* Game Dimensions */
 	--game-spacing: 32px;
 	--header-height: 4rem;
+	--game-width: min(500px, 58vh, 100%);
 
-	--color-success: hsl(150deg 70% 30%);
-	--color-warning: hsl(50deg 100% 30%);
-	--color-error: hsl(0deg 70% 45%);
-	--color-gray-100: hsl(0deg 0% 10%);
-	--color-gray-300: hsl(0deg 0% 25%);
-	--color-gray-500: hsl(0deg 0% 50%);
-	--color-gray-700: hsl(0deg 0% 75%);
-	--color-gray-900: hsl(0deg 0% 90%);
+	/* Colors - Light Theme */
+	--color-background: #ffffff;
+	--color-text: #1a1a1a;
+	--color-border: #e5e5e5;
+	--color-success: #538d4e;
+	--color-warning: #b59f3b;
+	--color-error: #dc2626;
+
+	/* Gray Scale */
+	--color-gray-100: #f3f4f6;
+	--color-gray-200: #e5e7eb;
+	--color-gray-300: #d1d5db;
+	--color-gray-400: #9ca3af;
+	--color-gray-500: #6b7280;
+	--color-gray-600: #4b5563;
+	--color-gray-700: #374151;
+	--color-gray-800: #1f2937;
+	--color-gray-900: #111827;
+
+	/* Transitions */
+	--transition-speed: 0.2s;
 }
 
-/*
-  Custom styles
-*/
+/* Dark Theme */
+[data-theme='dark'] {
+	--color-background: #121213;
+	--color-text: #ffffff;
+	--color-border: #3a3a3c;
+	--color-success: #538d4e;
+	--color-warning: #b59f3b;
+	--color-error: #ef4444;
+
+	/* Gray Scale - Dark */
+	--color-gray-100: #1f2937;
+	--color-gray-200: #374151;
+	--color-gray-300: #4b5563;
+	--color-gray-400: #6b7280;
+	--color-gray-500: #9ca3af;
+	--color-gray-600: #d1d5db;
+	--color-gray-700: #e5e7eb;
+	--color-gray-800: #f3f4f6;
+	--color-gray-900: #f9fafb;
+}
+
+/* Global Styles */
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	height: 100%;
+}
+
 body {
-	font-family: sans-serif;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	height: 100%;
+	background-color: var(--color-background);
+	color: var(--color-text);
+	transition: background-color var(--transition-speed) ease,
+		color var(--transition-speed) ease;
 }
 
-@media (max-height: 600px) {
-	body {
-		--game-spacing: 8px;
-	}
+#root {
+	height: 100%;
+	background-color: var(--color-background);
 }
 
 button {
+	font-family: inherit;
+	cursor: pointer;
 	margin: 0;
 	padding: 0;
 	border: none;
 	background: transparent;
-	cursor: pointer;
 	text-align: left;
 	color: inherit;
 }
@@ -109,5 +161,45 @@ h1 {
 	}
 	to {
 		transform: translateY(0%);
+	}
+}
+
+/* Focus Styles */
+*:focus {
+	outline: 2px solid var(--color-text);
+	outline-offset: 2px;
+}
+
+/* Transitions */
+*,
+*::before,
+*::after {
+	transition: background-color var(--transition-speed) ease-in-out,
+		color var(--transition-speed) ease-in-out,
+		border-color var(--transition-speed) ease-in-out;
+}
+
+.cell,
+.banner,
+button,
+input,
+.letter {
+	transition: all var(--transition-speed) ease-in-out;
+}
+
+/* Override transitions for specific elements */
+.cell[class*="correct"],
+.cell[class*="incorrect"],
+.cell[class*="misplaced"],
+.letter[class*="correct"],
+.letter[class*="incorrect"],
+.letter[class*="misplaced"] {
+	transition: all var(--transition-speed) ease-in-out;
+}
+
+/* Media Queries */
+@media (max-height: 600px) {
+	:root {
+		--game-spacing: 16px;
 	}
 }
