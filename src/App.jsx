@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import Game from './components/Game';
 import Layout from './components/Layout/Layout';
 import styles from './App.module.css';

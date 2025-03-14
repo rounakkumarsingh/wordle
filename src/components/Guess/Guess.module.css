@@ -1,12 +1,23 @@
 .cell {
-	position: relative;
-	width: 20%;
-	display: grid;
-	place-content: center;
-	aspect-ratio: 1 / 1;
+	width: 62px;
+	height: 62px;
 	border: 2px solid var(--color-gray-700);
-	border-radius: var(--radius);
 	font-size: 2rem;
+	font-weight: bold;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-transform: uppercase;
+	background: var(--color-background);
+	perspective: 1000px;
+	transform-style: preserve-3d;
+	backface-visibility: visible;
+	border-radius: var(--radius, 4px);
+	transition: border-color 0.15s ease;
+}
+
+.cell:hover {
+	transform: scale(1.05);
 }
 
 .cell:first-of-type {
