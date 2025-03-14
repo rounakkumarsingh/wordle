@@ -1,37 +1,51 @@
 .keyboard {
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: 8px;
+	margin-top: 1rem;
 }
 
 .keyboard-row {
 	display: flex;
 	justify-content: center;
-	gap: 4px;
+	gap: 6px;
 }
 
-.keyboard .letter {
-	width: 2rem;
-	height: 2rem;
-	border-radius: 4px;
-	display: grid;
-	place-content: center;
-	background: var(--color-gray-900);
-	font-size: 1rem;
-	font-weight: 600;
+.letter {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 6px;
+	background-color: var(--color-gray-100);
+	color: var(--color-text);
+	font-weight: bold;
+	cursor: pointer;
+	user-select: none;
+	border: 2px solid var(--color-border);
+	transition: all var(--transition-speed) ease-in-out;
 }
 
-.keyboard .letter.correct {
-	background: var(--color-success);
+.letter:hover {
+	transform: translateY(-2px);
+	border-color: var(--color-gray-400);
+}
+
+.letter.correct {
+	background-color: var(--color-success);
 	color: white;
+	border-color: var(--color-success);
 }
 
-.keyboard .letter.incorrect {
-	background: var(--color-gray-300);
+.letter.incorrect {
+	background-color: var(--color-gray-400);
 	color: white;
+	border-color: var(--color-gray-400);
 }
 
-.keyboard .letter.misplaced {
-	background: var(--color-warning);
+.letter.misplaced {
+	background-color: var(--color-warning);
 	color: white;
+	border-color: var(--color-warning);
 }

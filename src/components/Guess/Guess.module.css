@@ -1,25 +1,35 @@
 .cell {
-	position: relative;
-	width: 20%;
-	display: grid;
-	place-content: center;
-	aspect-ratio: 1 / 1;
-	border: 2px solid var(--color-gray-700);
-	border-radius: var(--radius);
+	width: 62px;
+	height: 62px;
+	border: 2px solid var(--color-border);
 	font-size: 2rem;
+	font-weight: bold;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-transform: uppercase;
+	background: var(--color-background);
+	border-radius: 4px;
+	color: var(--color-text);
+	transition: background-color var(--transition-speed) ease-in-out,
+				border-color var(--transition-speed) ease-in-out,
+				color var(--transition-speed) ease-in-out;
+}
+
+.cell:not(:empty) {
+	border-color: var(--color-gray-400);
+}
+
+.cell:hover {
+	border-color: var(--color-gray-500);
 }
 
 .cell:first-of-type {
-	--radius: 4px 0px 0px 0px;
+	--radius: 4px 0px 0px 4px;
 }
+
 .cell:last-of-type {
-	--radius: 0px 4px 0px 0px;
-}
-.cell:last-of-type {
-	--radius: 0px 0px 4px 0px;
-}
-.cell:first-of-type {
-	--radius: 0px 0px 0px 4px;
+	--radius: 0px 4px 4px 0px;
 }
 
 .correct {
@@ -27,11 +37,13 @@
 	border-color: var(--color-success);
 	color: white;
 }
+
 .incorrect {
 	background: var(--color-gray-300);
 	border-color: var(--color-gray-300);
 	color: white;
 }
+
 .misplaced {
 	background: var(--color-warning);
 	border-color: var(--color-warning);

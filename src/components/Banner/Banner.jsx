@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React from "react";
+import { motion } from "motion/react";
 import styles from "./Banner.module.css";
 
 function Banner({ type = "", answer, userGuessesCount, handleRestart } = {}) {
@@ -21,10 +21,28 @@ function Banner({ type = "", answer, userGuessesCount, handleRestart } = {}) {
 	}
 
 	return (
-		<div className={clsx(styles[type], styles.banner)}>
-			<p>{content}</p>
-			<button onClick={handleRestart}>Play Again!!</button>
-		</div>
+		<motion.div 
+			className={clsx(styles[type], styles.banner)}
+			initial={{ opacity: 0, y: -50 }}
+			animate={{ opacity: 1, y: 0 }}
+			exit={{ opacity: 0, y: -50 }}
+			transition={{ type: "spring", stiffness: 300, damping: 30 }}
+		>
+			<motion.p
+				initial={{ scale: 0.8 }}
+				animate={{ scale: 1 }}
+				transition={{ delay: 0.2 }}
+			>
+				{content}
+			</motion.p>
+			<motion.button
+				onClick={handleRestart}
+				whileHover={{ scale: 1.05 }}
+				whileTap={{ scale: 0.95 }}
+			>
+				Play Again!!
+			</motion.button>
+		</motion.div>
 	);
 }
 

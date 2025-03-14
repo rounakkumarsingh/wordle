@@ -1,14 +1,15 @@
 .guess-results {
-	flex: 1;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	gap: 5px;
+	margin-bottom: 10px;
 }
 
 .guess {
 	display: flex;
-	gap: 4px;
-	margin-bottom: 4px;
+	gap: 5px;
+	margin: 0;
+	padding: 0;
 }
 
 .guess:first-of-type .cell:first-of-type {
