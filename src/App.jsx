@@ -1,17 +1,20 @@
-import Game from "./components/Game";
-import Header from "./components/Header";
-import styles from "./App.module.css";
-import clsx from "clsx";
+import { motion } from 'framer-motion';
+import Game from './components/Game';
+import Layout from './components/Layout/Layout';
+import styles from './App.module.css';
 
 function App() {
 	return (
-		<div className={clsx(styles.wrapper)}>
-			<Header />
-
-			<div className={clsx(styles.gameWrapper)}>
+		<Layout>
+			<motion.div 
+				className={styles.app}
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				transition={{ duration: 0.5 }}
+			>
 				<Game />
-			</div>
-		</div>
+			</motion.div>
+		</Layout>
 	);
 }
 
